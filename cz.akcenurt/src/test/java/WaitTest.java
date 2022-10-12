@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -10,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 
-public class waitForInputAttributeTest {
+public class WaitTest {
 
     private WebDriver driver;
     private final String BASE_URL = "http://localhost/";
@@ -24,7 +25,7 @@ public class waitForInputAttributeTest {
     }
 
     @Test
-    public void waitForInputText(){
+    public void waitForInputAttributeTest(){
         driver.findElement(By.id("startWaitForText"))
                 .click();
 //        new WebDriverWait(driver, Duration.ofSeconds(5))
@@ -35,10 +36,30 @@ public class waitForInputAttributeTest {
 
     }
 
+    @Test
+    public void waitForPropertyTest(){
+        driver.findElement(By.id("startWaitForProperty"))
+                .click();
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.attributeContains((By.id("waitForProperty")),"class","error"));
+        Assert.assertFalse(driver.findElement(By.id("startWaitForProperty")).isEnabled());
+
+    }
+
+    @Test
+    public void waitForPropertyTest2(){
+        driver.findElement(By.id("startWaitForProperty"))
+                .click();
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.attributeContains((By.id("startWaitForProperty")),"disabled","true"));
+        Assert.assertFalse(driver.findElement(By.id("startWaitForProperty")).isEnabled());
+
+    }
+
     @After
     public void tearDown(){
-//        driver.close();
-//        driver.quit();
+        driver.close();
+        driver.quit();
 
     }
 
