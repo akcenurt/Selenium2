@@ -56,6 +56,7 @@ public class WaitTest {
 
     }
 
+
     @After
     public void tearDown(){
         driver.close();

@@ -1,0 +1,53 @@
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+
+public class WaitTest2 {
+
+    private WebDriver driver;
+    private final String BASE_URL = "http://localhost/";
+
+    @Before
+    public void setUP(){
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
+        driver = new ChromeDriver();
+        driver.get(BASE_URL + "minions.php");
+        driver.manage().window().maximize();
+    }
+
+    @Test
+    public void waitForNumberOfElements(){
+        int numberOfElements = 10;
+        driver.findElement(By.xpath("//input[@type='number']"))
+                .sendKeys(String.valueOf(numberOfElements));
+        driver.findElement(By.xpath("//button[contains(@class, btn-warning)]"))
+                .click();
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .withMessage("Waiting for number of elements to be " + numberOfElements)
+                .until(ExpectedConditions.numberOfElementsToBe
+                        (By.xpath("//div[@class='minions']//img"), numberOfElements));
+//        System.out.println(driver.findElements(By.xpath("//div[@class='minions']//img")).size());
+        Assert.assertEquals
+                (numberOfElements, driver.findElements(By.xpath("//div[@class='minions']//img")).size());
+
+
+
+    }
+
+    @After
+    public void tearDown(){
+        driver.close();
+        driver.quit();
+
+    }
+
+}
