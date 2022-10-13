@@ -20,12 +20,12 @@ public class WaitTest2 {
     public void setUP(){
         System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
         driver = new ChromeDriver();
-        driver.get(BASE_URL + "minions.php");
         driver.manage().window().maximize();
     }
 
     @Test
     public void waitForNumberOfElements(){
+        driver.get(BASE_URL + "minions.php");
         int numberOfElements = 10;
         driver.findElement(By.xpath("//input[@type='number']"))
                 .sendKeys(String.valueOf(numberOfElements));
@@ -38,7 +38,19 @@ public class WaitTest2 {
 //        System.out.println(driver.findElements(By.xpath("//div[@class='minions']//img")).size());
         Assert.assertEquals
                 (numberOfElements, driver.findElements(By.xpath("//div[@class='minions']//img")).size());
+    }
 
+    @Test
+    public void waitForINvisibility(){
+        driver.get(BASE_URL + "prestige.php");
+        driver.findElement(By.xpath("//img[@src='assets/img/hat.png']"))
+                .click();
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.invisibilityOfElementLocated
+                        (By.xpath("//img[@src='assets/img/hat.png']")));
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated
+                        (By.xpath("//img[@src='assets/img/hat.png']")));
 
 
     }
