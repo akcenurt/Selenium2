@@ -1,4 +1,5 @@
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -6,7 +7,10 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class JavascriptExecutorTest {
@@ -18,12 +22,13 @@ public class JavascriptExecutorTest {
     public void setUP(){
         System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
         driver = new ChromeDriver();
-        driver.get(BASE_URL + "tabulka.php");
         driver.manage().window().maximize();
     }
 
     @Test
-    public void testHighlight(){
+    public void testHighlightJSE(){
+
+        driver.get(BASE_URL + "tabulka.php");
 
         List <WebElement> rows = driver.findElements(By.xpath("//table//tbody//tr")); //!!findElementSSS!!
 
@@ -35,6 +40,37 @@ public class JavascriptExecutorTest {
             System.out.println(row.getText());
         }
 
+
+    }
+
+    @Test
+    public void blurTestJSE(){
+
+        driver.get(BASE_URL + "waitforit.php");
+        driver.findElement(By.id("waitForBlur")).sendKeys("bla bla bla");
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        js.executeScript("arguments[0].blur()", driver.findElement(By.id("waitForBlur")));
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.attributeToBe
+                        (driver.findElement(By.id("waitForBlur")),"value", "blured!"));
+        Assert.assertTrue(driver.findElement(By.id("waitForBlur")).getAttribute("value").contains("blured!"));
+
+    }
+
+    @Test
+    public void clickResponseTestJSE(){
+
+        driver.get(BASE_URL + "waitforit.php");
+        JavascriptExecutor js = ((JavascriptExecutor) driver);
+        js.executeScript("arguments[0].click()", driver.findElement(By.id("startWaitForText")));
+        new WebDriverWait(driver,Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div//p//span")));
+//        System.out.println(driver.findElement(By.xpath("//div//p//span"))
+//                .getAttribute("innerText"));
+        int response = Integer.parseInt(driver.findElement(By.xpath("//div//p//span"))
+                .getAttribute("innerText"));
+//        System.out.println(response);
+        Assert.assertTrue(response < 3000);
 
     }
 
